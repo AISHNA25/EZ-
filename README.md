@@ -21,14 +21,6 @@ To ensure the reliability and security of your Django Secure File Share applicat
 - Test that the dashboard displays files correctly for each user.
 - Test that the download modal and AJAX work as expected.
 
-### Example: Running Tests
-
-1. Create your tests in `core/tests.py` (or in a `tests/` directory).
-2. Run tests using:
-
-```bash
-python manage.py test
-```
 
 ---
 
