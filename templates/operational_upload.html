@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, ivory, #a2d4f7);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .upload-container {
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 123, 255, 0.2);
+        padding: 40px 30px;
+        width: 400px;
+        max-width: 90%;
+    }
+
+    .upload-container h2 {
+        text-align: center;
+        color: #007BFF;
+        margin-bottom: 30px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    input[type="file"],
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cce5ff;
+        border-radius: 8px;
+        background-color: #f0f8ff;
+        box-sizing: border-box;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .success-message {
+        text-align: center;
+        margin-top: 15px;
+        color: #155724;
+        font-weight: 600;
+        background-color: #d4edda;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #c3e6cb;
+    }
+</style>
+
+<div class="upload-container">
+    <h2>Upload File (Operational Only)</h2>
+
+    <div style="text-align: right; margin-bottom: 20px;">
+        <a href="{% url 'logout' %}" style="color: #dc3545; font-weight: bold;">Logout</a>
+    </div>
+
+    {% if success %}
+        <div class="success-message">File uploaded successfully!</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+</div>
+{% endblock %}

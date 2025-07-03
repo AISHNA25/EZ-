@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+.splash-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(120deg, #3a8dde 0%, #f6f5e8 100%);
+}
+.splash-content {
+    background: rgba(255,255,255,0.95);
+    padding: 60px 50px;
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(58,141,222,0.18);
+    text-align: center;
+    animation: fadeIn 1.2s;
+}
+.splash-content h1 {
+    font-size: 2.5em;
+    color: #3a8dde;
+    margin-bottom: 18px;
+    letter-spacing: 2px;
+}
+.splash-content p {
+    color: #555;
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+</style>
+<div class="splash-bg">
+    <div class="splash-content">
+        <h1>EZ File Sharing System</h1>
+        <p>Welcome! Securely share and access your files with ease.</p>
+        {% if messages %}
+            {% for message in messages %}
+                <div style="color: #dc3545; background: #f8d7da; border-radius: 6px; padding: 10px; margin-bottom: 18px; font-weight: 600;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        <button onclick="window.location.href='{% url 'login' %}'" style="padding: 12px 36px; font-size: 1.1em; background: #3a8dde; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Get Started</button>
+    </div>
+</div>
+<script>
+    setTimeout(function() {
+        window.location.href = "{% url 'login' %}";
+    }, 2500);
+</script>
+{% endblock %}

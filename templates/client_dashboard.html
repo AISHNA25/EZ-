@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, ivory, #a2d4f7);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 0;
+    }
+
+    .dashboard-container {
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 123, 255, 0.2);
+        padding: 30px;
+        width: 90%;
+        max-width: 900px;
+    }
+
+    .dashboard-container h2 {
+        text-align: center;
+        color: #007BFF;
+        margin-bottom: 30px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #f0f8ff;
+        border-radius: 10px;
+        overflow: hidden;
+        font-size: 15px;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 12px;
+        border-bottom: 1px solid #cce5ff;
+    }
+
+    th {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    tr:hover {
+        background-color: #e6f2ff;
+    }
+
+    a {
+        text-decoration: none;
+        color: #007BFF;
+        font-weight: 600;
+    }
+
+    a:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+
+    td[colspan] {
+        font-style: italic;
+        color: #666;
+    }
+</style>
+
+<div class="dashboard-container">
+    <h2>Client Dashboard</h2>
+    <div style="text-align: right; margin-bottom: 20px;">
+        <a href="{% url 'logout' %}" style="color: #dc3545; font-weight: bold;">Logout</a>
+    </div>
+    <table>
+        <tr>
+            <th>File Name</th>
+            <th>Uploaded By</th>
+            <th>Uploaded At</th>
+            <th>Download</th>
+        </tr>
+        {% for file in files %}
+        <tr>
+            <td>{{ file.file.name|slice:'8:' }}</td>
+            <td>{{ file.uploaded_by.username }}</td>
+            <td>{{ file.uploaded_at }}</td>
+            <td>
+                <button type="button" class="btn btn-primary" onclick="showDownloadModal({{ file.id }}, '{{ file.file.name|escapejs }}')">Download</button>
+<!-- Download Link Modal -->
+<div id="downloadModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:#fff; padding:30px 20px; border-radius:10px; min-width:300px; max-width:90vw; text-align:center; position:relative;">
+        <span style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px;" onclick="closeDownloadModal()">&times;</span>
+        <h4>Download Link</h4>
+        <div id="downloadLinkContainer" style="margin:20px 0;"></div>
+        <button class="btn btn-secondary" onclick="closeDownloadModal()">Close</button>
+    </div>
+</div>
+
+<script>
+function showDownloadModal(fileId, fileName) {
+    // Show loading message
+    document.getElementById('downloadLinkContainer').innerHTML = 'Generating secure link...';
+    document.getElementById('downloadModal').style.display = 'flex';
+    // AJAX request to get secure download link
+    fetch(`/generate-download-link/${fileId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('downloadLinkContainer').innerHTML = `<a href="${data.url}" class="btn btn-success" target="_blank">Click here to download ${fileName}</a><br><small>This link is valid for a limited time and can only be used once.</small>`;
+        } else {
+            document.getElementById('downloadLinkContainer').innerHTML = `<span style='color:red;'>${data.error || 'Failed to generate link.'}</span>`;
+        }
+    })
+    .catch(() => {
+        document.getElementById('downloadLinkContainer').innerHTML = '<span style="color:red;">Error generating link.</span>';
+    });
+}
+
+function closeDownloadModal() {
+    document.getElementById('downloadModal').style.display = 'none';
+}
+
+// Helper to get CSRF token from cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No files uploaded yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

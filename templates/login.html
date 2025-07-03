@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, ivory, #a2d4f7);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-container {
+        background-color: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 123, 255, 0.2);
+        padding: 40px 30px;
+        width: 350px;
+        max-width: 90%;
+    }
+
+    .login-container h2 {
+        text-align: center;
+        color: #007BFF;
+        margin-bottom: 30px;
+    }
+
+    form div {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        color: #333;
+        font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cce5ff;
+        border-radius: 8px;
+        box-sizing: border-box;
+        background-color: #f0f8ff;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .error {
+        margin-top: 15px;
+        color: #dc3545;
+        font-weight: 600;
+        background-color: #f8d7da;
+        padding: 10px;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_user_type">User Type:</label>
+            {{ form.user_type }}
+        </div>
+        <div>
+            <label for="id_username">Email:</label>
+            {{ form.username }}
+        </div>
+        <div>
+            <label for="id_password">Password:</label>
+            {{ form.password }}
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% if form.errors %}
+        <div class="error">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+    <div style="text-align:center; margin-top:18px;">
+        <span>Don't have an account? <a href="{% url 'signup' %}">Sign up</a></span>
+    </div>
+</div>
+{% endblock %}
